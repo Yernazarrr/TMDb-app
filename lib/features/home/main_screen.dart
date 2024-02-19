@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:themdb_app/features/movies/movies_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     Text('News'),
-    Text('Movies'),
+    MoviesScreen(),
     Text('Cartoons'),
   ];
 
