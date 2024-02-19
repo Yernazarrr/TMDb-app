@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/features/movies/model/movie.dart';
+import 'package:themdb_app/features/movies_list/model/movie.dart';
 import 'package:themdb_app/resources/resources.dart';
 
 class MoviesScreen extends StatefulWidget {
@@ -12,30 +12,35 @@ class MoviesScreen extends StatefulWidget {
 class _MoviesScreenState extends State<MoviesScreen> {
   final _movies = [
     Movie(
+        id: 1,
         imageName: AppImages.theDarkKnight,
         title: 'The Dark Knight',
         time: 'July 18, 2008',
         description:
             'Batman raises the stakes in his war on crime. With the help of Lt'),
     Movie(
+        id: 2,
         imageName: AppImages.theDarkKnight,
         title: 'Spider-Man: No way home',
         time: 'July 18, 2008',
         description:
             'Batman raises the stakes in his war on crime. With the help of Lt'),
     Movie(
+        id: 3,
         imageName: AppImages.theDarkKnight,
         title: 'Django Unchained',
         time: 'July 18, 2008',
         description:
             'Batman raises the stakes in his war on crime. With the help of Lt'),
     Movie(
+        id: 4,
         imageName: AppImages.theDarkKnight,
         title: 'Test',
         time: 'July 18, 2008',
         description:
             'Batman raises the stakes in his war on crime. With the help of Lt'),
     Movie(
+        id: 5,
         imageName: AppImages.theDarkKnight,
         title: 'Something',
         time: 'July 18, 2008',
@@ -58,6 +63,15 @@ class _MoviesScreenState extends State<MoviesScreen> {
     }
 
     setState(() {});
+  }
+
+  void _onSelectMovie(int index) {
+    final id = _movies[index].id;
+    Navigator.pushNamed(
+      context,
+      '/mainScreen/movieDetails',
+      arguments: id,
+    );
   }
 
   @override
@@ -136,7 +150,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
-                      onTap: () {},
+                      onTap: () => _onSelectMovie(index),
                     ),
                   ),
                 ],
