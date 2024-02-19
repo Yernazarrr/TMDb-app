@@ -18,20 +18,19 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('News'),
-    MoviesScreen(),
-    Text('Cartoons'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TMDB'),
       ),
-      body: Center(
-        child: _widgetOptions[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          Text('News'),
+          MoviesScreen(),
+          Text('Cartoons'),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
