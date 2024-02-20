@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:themdb_app/features/movie_details/widgets/widgets.dart';
 
 import '/resources/resources.dart';
 
@@ -44,7 +45,21 @@ class _UserScore extends StatelessWidget {
           onPressed: () {},
           child: const Row(
             children: [
-              Icon(Icons.add),
+              SizedBox(
+                width: 50,
+                height: 50,
+                child: CircularProgressBarWidget(
+                  percent: 0.72,
+                  fillColor: Color.fromARGB(255, 10, 23, 25),
+                  lineColor: Color.fromARGB(255, 37, 203, 103),
+                  freeColor: Color.fromARGB(255, 25, 54, 31),
+                  lineWidth: 3,
+                  child: Text(
+                    '72%',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
               SizedBox(width: 10),
               Text('User Score'),
             ],
