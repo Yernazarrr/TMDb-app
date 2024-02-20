@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themdb_app/features/movie_details/widgets/movie_main_info.dart';
+import 'package:themdb_app/features/movie_details/widgets/movie_screen_cast.dart';
 
 class MovieDetails extends StatefulWidget {
   final int movieId;
@@ -21,6 +22,8 @@ class _MovieDetailsState extends State<MovieDetails> {
         child: ListView(
           children: const [
             MovieMainInfo(),
+            SizedBox(height: 30),
+            MovieScreenCast(),
           ],
         ),
       ),
