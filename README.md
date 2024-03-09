@@ -1,3 +1,3 @@
-# themdb_app
+# The Movie App
 
-A new Flutter project.
+Мобильная версия themoviedb на Flutter.
