@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/features/movies_list/movies_screen.dart';
+import 'package:themdb_app/ui/features/movies_list/movies_screen.dart';
+import 'package:themdb_app/ui/features/news/news.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -27,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       body: IndexedStack(
         index: _selectedIndex,
         children: const [
-          Text('News'),
+          NewsWidget(),
           MoviesScreen(),
           Text('Cartoons'),
         ],

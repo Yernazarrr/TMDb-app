@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themdb_app/domain/api_client/api_client.dart';
 import 'package:themdb_app/domain/data_providers/session_data_provider.dart';
+import 'package:themdb_app/ui/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -56,7 +57,8 @@ class AuthModel extends ChangeNotifier {
     await _sessionDataProvider.setSessionId(sessionId);
 
     if (!context.mounted) return;
-    Navigator.of(context).pushNamed('/mainScrenn');
+    Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 }
 

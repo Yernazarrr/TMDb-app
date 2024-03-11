@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/features/movie_details/widgets/widgets.dart';
+import 'package:themdb_app/ui/features/movie_details/widgets/widgets.dart';
 
 import '/resources/resources.dart';
 

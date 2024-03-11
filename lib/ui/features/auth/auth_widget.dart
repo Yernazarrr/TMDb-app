@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/features/auth/auth_model.dart';
+import 'package:themdb_app/ui/features/auth/auth_model.dart';
 import 'package:themdb_app/ui/theme/app_button_style.dart';
 
 class AuthWidget extends StatefulWidget {

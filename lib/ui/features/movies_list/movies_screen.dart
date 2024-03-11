@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/features/movies_list/model/movie.dart';
+import 'package:themdb_app/ui/features/movies_list/model/movie.dart';
 import 'package:themdb_app/resources/resources.dart';
+import 'package:themdb_app/ui/navigation/main_navigation.dart';
 
 class MoviesScreen extends StatefulWidget {
   const MoviesScreen({super.key});
@@ -67,11 +68,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   void _onSelectMovie(int index) {
     final id = _movies[index].id;
-    Navigator.pushNamed(
-      context,
-      '/mainScreen/movieDetails',
-      arguments: id,
-    );
+    Navigator.pushNamed(context, MainNavigationRouteNames.movieDetails,
+        arguments: id);
   }
 
   @override
