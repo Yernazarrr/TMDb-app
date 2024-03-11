@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/theme/app_button_style.dart';
+import 'package:themdb_app/features/auth/auth_model.dart';
+import 'package:themdb_app/ui/theme/app_button_style.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({super.key});
@@ -68,19 +69,13 @@ class _HeaderWidget extends StatelessWidget {
   }
 }
 
-class _FormWidget extends StatefulWidget {
+class _FormWidget extends StatelessWidget {
   const _FormWidget();
 
   @override
-  State<_FormWidget> createState() => _FormWidgetState();
-}
-
-class _FormWidgetState extends State<_FormWidget> {
-  final _usernameTextController = TextEditingController();
-  final _passwordTextContoller = TextEditingController();
-
-  @override
   Widget build(BuildContext context) {
+    final model = AuthProvider.of(context)?.model;
+
     const textStyle = TextStyle(
       color: Color(0xFF212529),
       fontSize: 16,
@@ -101,13 +96,14 @@ class _FormWidgetState extends State<_FormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const _ErrorMessageWidget(),
         const Text(
           'Username',
           style: textStyle,
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: _usernameTextController,
+          controller: model?.loginTextController,
           cursorColor: Colors.blue,
           decoration: textFieldDecorator,
         ),
@@ -118,42 +114,14 @@ class _FormWidgetState extends State<_FormWidget> {
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: _passwordTextContoller,
+          controller: model?.passwordTextController,
           decoration: textFieldDecorator,
           obscureText: true,
         ),
         const SizedBox(height: 5),
         Row(
           children: [
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: const MaterialStatePropertyAll(
-                  Color(0xFF01B4E4),
-                ),
-                foregroundColor: const MaterialStatePropertyAll(Colors.white),
-                padding: const MaterialStatePropertyAll(
-                  EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 8,
-                  ),
-                ),
-                textStyle: const MaterialStatePropertyAll(
-                  TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                shape: MaterialStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/mainScreen');
-              },
-              child: const Text('Login'),
-            ),
+            const _AuthButtonWidget(),
             TextButton(
               style: AppButtonStyle.linkButton,
               onPressed: () {},
@@ -162,6 +130,76 @@ class _FormWidgetState extends State<_FormWidget> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _AuthButtonWidget extends StatelessWidget {
+  const _AuthButtonWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    const color = Color(0xFF01B4E4);
+    final model = AuthProvider.of(context)?.model;
+
+    final onPressed =
+        model?.canStartAuth == true ? () => model?.auth(context) : null;
+
+    final child = model?.isAuthProgress == true
+        ? const SizedBox(
+            height: 15,
+            width: 15,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+        : const Text('Login');
+
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        backgroundColor: const MaterialStatePropertyAll(color),
+        foregroundColor: const MaterialStatePropertyAll(Colors.white),
+        padding: const MaterialStatePropertyAll(
+          EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 8,
+          ),
+        ),
+        textStyle: const MaterialStatePropertyAll(
+          TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        shape: MaterialStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _ErrorMessageWidget extends StatelessWidget {
+  const _ErrorMessageWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final errorMessage = AuthProvider.of(context)?.model.errorMessage;
+
+    //Если нет ошибок, возвращаем пустое место
+    if (errorMessage == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Text(
+        errorMessage,
+        style: const TextStyle(
+          fontSize: 17,
+          color: Colors.red,
+        ),
+      ),
     );
   }
 }
