@@ -61,18 +61,3 @@ class AuthModel extends ChangeNotifier {
         .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 }
-
-class AuthProvider extends InheritedNotifier {
-  final AuthModel model;
-  const AuthProvider({
-    super.key,
-    required this.child,
-    required this.model,
-  }) : super(child: child, notifier: model);
-
-  final Widget child;
-
-  static AuthProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
-  }
-}

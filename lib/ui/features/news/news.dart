@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/domain/data_providers/session_data_provider.dart';
 
 class NewsWidget extends StatefulWidget {
   const NewsWidget({super.key});
@@ -11,11 +10,10 @@ class NewsWidget extends StatefulWidget {
 class _NewsWidgetState extends State<NewsWidget> {
   @override
   Widget build(BuildContext context) {
-    final sessionDataProvider = SessionDataProvider();
     return Scaffold(
       body: Center(
         child: IconButton(
-          onPressed: () => sessionDataProvider.setSessionId(null),
+          onPressed: () => {},
           icon: const Icon(Icons.logout),
         ),
       ),

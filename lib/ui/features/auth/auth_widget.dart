@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:themdb_app/library/widgets/inherited/provider.dart';
 import 'package:themdb_app/ui/features/auth/auth_model.dart';
 import 'package:themdb_app/ui/theme/app_button_style.dart';
 
@@ -74,7 +75,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = AuthProvider.of(context)?.model;
+    final model = Provider.of<AuthModel>(context);
 
     const textStyle = TextStyle(
       color: Color(0xFF212529),
@@ -140,7 +141,7 @@ class _AuthButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF01B4E4);
-    final model = AuthProvider.of(context)?.model;
+    final model = Provider.of<AuthModel>(context);
 
     final onPressed =
         model?.canStartAuth == true ? () => model?.auth(context) : null;
@@ -186,7 +187,7 @@ class _ErrorMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = AuthProvider.of(context)?.model.errorMessage;
+    final errorMessage = Provider.of<AuthModel>(context)?.errorMessage;
 
     //Если нет ошибок, возвращаем пустое место
     if (errorMessage == null) return const SizedBox.shrink();
