@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Provider<Model> extends InheritedWidget {
+class NotifierProvider<Model extends ChangeNotifier> extends InheritedNotifier {
   final Model model;
 
-  const Provider({super.key, required this.child, required this.model})
-      : super(child: child);
+  const NotifierProvider({
+    Key? key,
+    required this.model,
+    required Widget child,
+  }) : super(
+          key: key,
+          notifier: model,
+          child: child,
+        );
 
-  final Widget child;
-
-  static Model? of<Model>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<Provider<Model>>()?.model;
-  }
-
-  @override
-  bool updateShouldNotify(Provider oldWidget) {
-    return model != oldWidget;
+  static Model? of<Model extends ChangeNotifier>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<NotifierProvider<Model>>()
+        ?.model;
   }
 }

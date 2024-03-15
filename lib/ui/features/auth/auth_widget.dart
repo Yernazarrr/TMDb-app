@@ -75,19 +75,20 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<AuthModel>(context);
+    final model = NotifierProvider.of<AuthModel>(context);
 
     const textStyle = TextStyle(
       color: Color(0xFF212529),
       fontSize: 16,
     );
 
-    const textFieldDecorator = InputDecoration(
-      border: OutlineInputBorder(),
+    final textFieldDecorator = InputDecoration(
+      border: const OutlineInputBorder(),
       fillColor: Colors.black,
-      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       isCollapsed: true,
-      focusedBorder: OutlineInputBorder(
+      errorText: model?.errorMessage,
+      focusedBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           color: Colors.blue,
         ),
@@ -141,7 +142,7 @@ class _AuthButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF01B4E4);
-    final model = Provider.of<AuthModel>(context);
+    final model = NotifierProvider.of<AuthModel>(context);
 
     final onPressed =
         model?.canStartAuth == true ? () => model?.auth(context) : null;
@@ -187,7 +188,7 @@ class _ErrorMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = Provider.of<AuthModel>(context)?.errorMessage;
+    final errorMessage = NotifierProvider.of<AuthModel>(context)?.errorMessage;
 
     //Если нет ошибок, возвращаем пустое место
     if (errorMessage == null) return const SizedBox.shrink();

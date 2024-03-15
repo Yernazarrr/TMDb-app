@@ -15,12 +15,12 @@ abstract class MainNavigationRouteNames {
 class MainNavigation {
   String initialRoute(bool isAuth) => isAuth
       ? MainNavigationRouteNames.mainScreen
-      : MainNavigationRouteNames.mainScreen;
+      : MainNavigationRouteNames.auth;
   final routes = <String, Widget Function(BuildContext context)>{
     MainNavigationRouteNames.auth: (context) =>
-        Provider(model: AuthModel(), child: const AuthWidget()),
+        NotifierProvider(model: AuthModel(), child: const AuthWidget()),
     MainNavigationRouteNames.mainScreen: (context) =>
-        Provider(model: MainScreenModel(), child: const MainScreen()),
+        NotifierProvider(model: MainScreenModel(), child: const MainScreen()),
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings) {
