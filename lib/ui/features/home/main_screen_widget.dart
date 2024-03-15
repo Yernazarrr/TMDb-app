@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/ui/features/movies_list/movies_screen.dart';
+import 'package:themdb_app/library/widgets/inherited/provider.dart';
+import 'package:themdb_app/ui/features/movies_list/movie_list_model.dart';
+import 'package:themdb_app/ui/features/movies_list/movies_list_widget.dart';
 import 'package:themdb_app/ui/features/news/news.dart';
 
 class MainScreen extends StatefulWidget {
@@ -10,6 +12,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final movieListModel = MovieListModel();
+
   int _selectedIndex = 0;
 
   void _onSelectIndex(int index) {
@@ -20,6 +24,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    movieListModel.setupLocale(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,10 +37,13 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: const [
-          NewsWidget(),
-          MoviesScreen(),
-          Text('Cartoons'),
+        children: [
+          const NewsWidget(),
+          NotifierProvider(
+            model: movieListModel,
+            child: const MovieListWidget(),
+          ),
+          const Text('Cartoons'),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

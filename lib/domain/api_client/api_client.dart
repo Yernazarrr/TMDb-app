@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:themdb_app/domain/entity/popular_movie_response.dart';
 import 'package:themdb_app/ui/features/auth/auth_model.dart';
 
 class ApiClient {
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
-  // static const _imageUrl = 'https://image.tmdb.org/t/p';
+  static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '6307d905b2df602ae8f629286fea7bd6';
 
   //Авторизация пользователя
@@ -28,16 +29,6 @@ class ApiClient {
     final sessionId = await _makeSession(requestToken: validToken);
 
     return sessionId;
-  }
-
-  Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
-    final uri = Uri.parse('$_host$path');
-
-    if (parameters != null) {
-      return uri.replace(queryParameters: parameters);
-    } else {
-      return uri;
-    }
   }
 
   //Делаем GET запрос
@@ -96,6 +87,42 @@ class ApiClient {
       rethrow;
     } catch (_) {
       throw ApiClientException(type: ApiClientExceptionType.other);
+    }
+  }
+
+  static String imageUrl(String path) => _imageUrl + path;
+
+  //Получаем Токен авторизации
+  Future<PopularMovieResponse> getPopularMovies(int page, String locale) async {
+    //Парсим JSON
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+
+      return response;
+    }
+
+    //Делаем GET запрос
+    final result = _get(
+      '/movie/popular',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page:': page.toString(),
+        'language': locale,
+      },
+    );
+
+    return result;
+  }
+
+  Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
+    final uri = Uri.parse('$_host$path');
+
+    if (parameters != null) {
+      return uri.replace(queryParameters: parameters);
+    } else {
+      return uri;
     }
   }
 
