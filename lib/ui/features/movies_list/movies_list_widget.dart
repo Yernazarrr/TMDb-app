@@ -84,7 +84,7 @@ class MovieListWidget extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
-                      onTap: () => model.onSelectMovie(index, context),
+                      onTap: () => model.onSelectMovie(context, index),
                     ),
                   ),
                 ],

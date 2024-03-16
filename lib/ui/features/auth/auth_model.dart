@@ -30,7 +30,7 @@ class AuthModel extends ChangeNotifier {
     final password = passwordTextController.text;
 
     if (login.isEmpty || password.isEmpty) {
-      _errorMessage = 'Заполните пароль или логин!';
+      _errorMessage = 'Заполните логин и пароль';
       notifyListeners();
       return;
     }
@@ -47,19 +47,17 @@ class AuthModel extends ChangeNotifier {
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.network:
-          _errorMessage = 'Сервер не доступен. Проверьте подключение к сети';
+          _errorMessage =
+              'Сервер не доступен. Проверте подключение к интернету';
           break;
         case ApiClientExceptionType.auth:
-          _errorMessage = 'Неправильная логин или пароль';
+          _errorMessage = 'Неправильный логин пароль!';
           break;
         case ApiClientExceptionType.other:
-          _errorMessage = 'Неизвестная ошибка, повторите попытку';
+          _errorMessage = 'Произошла ошибка. Попробуйте еще раз';
           break;
       }
-      _errorMessage = 'Сервер не доступен';
-      notifyListeners();
     }
-
     _isAuthProgress = false;
     if (_errorMessage != null) {
       notifyListeners();
@@ -67,11 +65,10 @@ class AuthModel extends ChangeNotifier {
     }
 
     if (sessionId == null) {
-      _errorMessage = 'Неизвестная ошибка, повторите попытку';
+      _errorMessage = 'Неизвестная ошибка, поторите попытку';
       notifyListeners();
       return;
     }
-
     await _sessionDataProvider.setSessionId(sessionId);
 
     if (!context.mounted) return;
