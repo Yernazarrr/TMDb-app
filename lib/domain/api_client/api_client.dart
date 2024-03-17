@@ -116,6 +116,36 @@ class ApiClient {
     return result;
   }
 
+  //Поиск фильмов
+  Future<PopularMovieResponse> searchMovie(
+    int page,
+    String locale,
+    String query,
+  ) {
+    //Парсим JSON
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+
+      return response;
+    }
+
+    //Делаем GET запрос
+    final result = _get(
+      '/search/movie',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page:': page.toString(),
+        'language': locale,
+        'query': query,
+        'include_adult': true.toString(),
+      },
+    );
+
+    return result;
+  }
+
   Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
     final uri = Uri.parse('$_host$path');
 
