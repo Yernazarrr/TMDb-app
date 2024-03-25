@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:themdb_app/ui/theme/app_colors.dart';
 
 final theme = ThemeData(
-  useMaterial3: true,
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromRGBO(3, 37, 65, 1),
     foregroundColor: Colors.white,
+    backgroundColor: AppColors.mainDarkBlue,
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: AppColors.mainDarkBlue,
     selectedItemColor: Colors.white,
     unselectedItemColor: Colors.grey,
-    backgroundColor: Color.fromRGBO(3, 37, 65, 1),
   ),
 );

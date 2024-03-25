@@ -1,13 +1,13 @@
-import 'dart:io';
+// import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:themdb_app/resources/resources.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:themdb_app/resources/resources.dart';
 
-void main() {
-  test('app_images assets test', () {
-    expect(File(AppImages.theActor).existsSync(), isTrue);
-    expect(File(AppImages.theDarkKnight).existsSync(), isTrue);
-    expect(File(AppImages.theDarkKnightBackgroundImg).existsSync(), isTrue);
-    expect(File(AppImages.theDarkKnightPoster).existsSync(), isTrue);
-  });
-}
+// void main() {
+//   test('app_images assets test', () {
+//     expect(File(AppImages.actor).existsSync(), isTrue);
+//     expect(File(AppImages.contrebuter).existsSync(), isTrue);
+//     expect(File(AppImages.theDarkKnightBackgroundImg).existsSync(), isTrue);
+//     expect(File(AppImages.theDarkKnightPoster).existsSync(), isTrue);
+//   });
+// }

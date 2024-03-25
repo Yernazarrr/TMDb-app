@@ -4,14 +4,12 @@ import 'package:themdb_app/library/widgets/inherited/provider.dart';
 import 'package:themdb_app/ui/features/movies_list/movie_list_model.dart';
 
 class MovieListWidget extends StatelessWidget {
-  const MovieListWidget({super.key});
+  const MovieListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieListModel>(context);
-
     if (model == null) return const SizedBox.shrink();
-
     return Stack(
       children: [
         ListView.builder(
@@ -19,12 +17,10 @@ class MovieListWidget extends StatelessWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: model.movies.length,
           itemExtent: 163,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext context, int index) {
             model.showedMovieAtIndex(index);
             final movie = model.movies[index];
-
             final posterPath = movie.posterPath;
-            final releaseDate = movie.releaseDate;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Stack(
@@ -32,6 +28,8 @@ class MovieListWidget extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
+                      border: Border.all(color: Colors.black.withOpacity(0.2)),
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -39,13 +37,12 @@ class MovieListWidget extends StatelessWidget {
                           offset: const Offset(0, 2),
                         ),
                       ],
-                      border: Border.all(color: Colors.black.withOpacity(0.2)),
-                      borderRadius: BorderRadius.circular(10),
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: Row(
                       children: [
-                        Image.network(ApiClient.imageUrl(posterPath)),
+                        Image.network(ApiClient.imageUrl(posterPath),
+                            width: 95),
                         const SizedBox(width: 15),
                         Expanded(
                           child: Column(
@@ -62,7 +59,8 @@ class MovieListWidget extends StatelessWidget {
                               const SizedBox(height: 5),
                               Text(
                                 model.stringFromDate(
-                                    DateTime.parse(releaseDate)),
+                                  DateTime.parse(movie.releaseDate),
+                                ),
                                 style: const TextStyle(color: Colors.grey),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -84,7 +82,7 @@ class MovieListWidget extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
-                      onTap: () => model.onSelectMovie(context, index),
+                      onTap: () => model.onMovieTap(context, index),
                     ),
                   ),
                 ],
@@ -95,9 +93,9 @@ class MovieListWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-            onChanged: model.searchMovie,
+            onChanged: model.serachMovie,
             decoration: InputDecoration(
-              hintText: 'Search',
+              labelText: 'Поиск',
               filled: true,
               fillColor: Colors.white.withAlpha(235),
               border: const OutlineInputBorder(),
@@ -108,5 +106,3 @@ class MovieListWidget extends StatelessWidget {
     );
   }
 }
-
-//'Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.',

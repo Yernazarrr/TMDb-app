@@ -3,14 +3,6 @@ import 'package:themdb_app/domain/api_client/api_client.dart';
 import 'package:themdb_app/domain/data_providers/session_data_provider.dart';
 import 'package:themdb_app/ui/navigation/main_navigation.dart';
 
-enum ApiClientExceptionType { network, auth, other }
-
-class ApiClientException implements Exception {
-  final ApiClientExceptionType type;
-
-  ApiClientException({required this.type});
-}
-
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
   final _sessionDataProvider = SessionDataProvider();
@@ -37,7 +29,6 @@ class AuthModel extends ChangeNotifier {
     _errorMessage = null;
     _isAuthProgress = true;
     notifyListeners();
-
     String? sessionId;
     try {
       sessionId = await _apiClient.auth(

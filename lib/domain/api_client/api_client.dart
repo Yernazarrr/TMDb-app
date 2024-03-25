@@ -1,8 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:themdb_app/domain/entity/popular_movie_response.dart';
-import 'package:themdb_app/ui/features/auth/auth_model.dart';
+import 'package:themdb_app/domain/entity/movie_details/movie_details.dart';
+import 'package:themdb_app/domain/entity/popular_movie/popular_movie_response.dart';
+
+enum ApiClientExceptionType {
+  network,
+  auth,
+  other,
+}
+
+class ApiClientException implements Exception {
+  final ApiClientExceptionType type;
+
+  ApiClientException(this.type);
+}
 
 class ApiClient {
   final _client = HttpClient();
@@ -10,140 +22,22 @@ class ApiClient {
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '6307d905b2df602ae8f629286fea7bd6';
 
+  static String imageUrl(String path) => _imageUrl + path;
+
   //Авторизация пользователя
   Future<String> auth({
     required String username,
     required String password,
   }) async {
-    //Проверка токена
     final token = await _makeToken();
-
-    //Если токен верный, проверяем валидность логина и пароля
     final validToken = await _validateUser(
       username: username,
       password: password,
       requestToken: token,
     );
 
-    //В конце если все верно, вернем сессию
     final sessionId = await _makeSession(requestToken: validToken);
-
     return sessionId;
-  }
-
-  //Делаем GET запрос
-  Future<T> _get<T>(String path, T Function(dynamic json) parser,
-      [Map<String, dynamic>? parameters]) async {
-    final url = _makeUri(path, parameters);
-
-    try {
-      final request = await _client.getUrl(url);
-      final response = await request.close();
-      final json = await response.jsonDecode();
-
-      //Проверяем корректность ответа
-      _validateResponse(response, json);
-
-      //Если ответ корректный верным результат
-      final result = parser(json);
-
-      return result;
-    } on SocketException {
-      //Если проблемы с соединением
-      throw ApiClientException(type: ApiClientExceptionType.network);
-    } on ApiClientException {
-      rethrow;
-    } catch (_) {
-      throw ApiClientException(type: ApiClientExceptionType.other);
-    }
-  }
-
-  //Делаем POST запрос
-  //В параметры передаем путь, JSON парсер, и параметры body
-  Future<T> _post<T>(String path, T Function(dynamic json) parser,
-      Map<String, dynamic> bodyParameters,
-      [Map<String, dynamic>? urlParameters]) async {
-    try {
-      final url = _makeUri(path, urlParameters);
-      final request = await _client.postUrl(url);
-
-      //Записываем headers
-      request.headers.contentType = ContentType.json;
-      request.write(jsonEncode(bodyParameters));
-
-      final response = await request.close();
-      final dynamic json = await response.jsonDecode();
-
-      //Проверяем корректность ответа
-      _validateResponse(response, json);
-
-      //Если ответ корректный верным результат
-      final result = parser(json);
-
-      return result;
-    } on SocketException {
-      throw ApiClientException(type: ApiClientExceptionType.network);
-    } on ApiClientException {
-      rethrow;
-    } catch (_) {
-      throw ApiClientException(type: ApiClientExceptionType.other);
-    }
-  }
-
-  static String imageUrl(String path) => _imageUrl + path;
-
-  //Получаем Токен авторизации
-  Future<PopularMovieResponse> getPopularMovies(int page, String locale) async {
-    //Парсим JSON
-    parser(dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final response = PopularMovieResponse.fromJson(jsonMap);
-
-      return response;
-    }
-
-    //Делаем GET запрос
-    final result = _get(
-      '/movie/popular',
-      parser,
-      <String, dynamic>{
-        'api_key': _apiKey,
-        'page:': page.toString(),
-        'language': locale,
-      },
-    );
-
-    return result;
-  }
-
-  //Поиск фильмов
-  Future<PopularMovieResponse> searchMovie(
-    int page,
-    String locale,
-    String query,
-  ) {
-    //Парсим JSON
-    parser(dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final response = PopularMovieResponse.fromJson(jsonMap);
-
-      return response;
-    }
-
-    //Делаем GET запрос
-    final result = _get(
-      '/search/movie',
-      parser,
-      <String, dynamic>{
-        'api_key': _apiKey,
-        'page:': page.toString(),
-        'language': locale,
-        'query': query,
-        'include_adult': true.toString(),
-      },
-    );
-
-    return result;
   }
 
   Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
@@ -156,27 +50,139 @@ class ApiClient {
     }
   }
 
-  //Получаем Токен авторизации
+  Future<T> _get<T>(
+    String path,
+    T Function(dynamic json) parser, [
+    Map<String, dynamic>? parameters,
+  ]) async {
+    final url = _makeUri(path, parameters);
+
+    try {
+      final request = await _client.getUrl(url);
+      final response = await request.close();
+      final dynamic json = (await response.jsonDecode());
+
+      _validateResponse(response, json);
+
+      final result = parser(json);
+
+      return result;
+    } on SocketException {
+      throw ApiClientException(ApiClientExceptionType.network);
+    } on ApiClientException {
+      rethrow;
+    } catch (_) {
+      throw ApiClientException(ApiClientExceptionType.other);
+    }
+  }
+
+  Future<T> _post<T>(
+    String path,
+    Map<String, dynamic> bodyParameters,
+    T Function(dynamic json) parser, [
+    Map<String, dynamic>? urlParameters,
+  ]) async {
+    try {
+      final url = _makeUri(path, urlParameters);
+      final request = await _client.postUrl(url);
+
+      request.headers.contentType = ContentType.json;
+      request.write(jsonEncode(bodyParameters));
+      final response = await request.close();
+      final dynamic json = (await response.jsonDecode());
+      _validateResponse(response, json);
+
+      final result = parser(json);
+      return result;
+    } on SocketException {
+      throw ApiClientException(ApiClientExceptionType.network);
+    } on ApiClientException {
+      rethrow;
+    } catch (_) {
+      throw ApiClientException(ApiClientExceptionType.other);
+    }
+  }
+
   Future<String> _makeToken() async {
-    //Парсим JSON
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final token = jsonMap['request_token'] as String;
-
       return token;
     }
 
-    //Делаем GET запрос
     final result = _get(
       '/authentication/token/new',
       parser,
       <String, dynamic>{'api_key': _apiKey},
     );
-
     return result;
   }
 
-  //Проверяем
+  Future<PopularMovieResponse> popularMovie(int page, String locale) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/movie/popular',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+      },
+    );
+    return result;
+  }
+
+  Future<PopularMovieResponse> searchMovie(
+    int page,
+    String locale,
+    String query,
+  ) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/search/movie',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+        'query': query,
+        'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetails> movieDetails(
+    int movieId,
+    String locale,
+  ) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language': locale,
+      },
+    );
+    return result;
+  }
+
   Future<String> _validateUser({
     required String username,
     required String password,
@@ -185,7 +191,6 @@ class ApiClient {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final token = jsonMap['request_token'] as String;
-
       return token;
     }
 
@@ -194,69 +199,54 @@ class ApiClient {
       'password': password,
       'request_token': requestToken,
     };
-
-    //Делаем POST запрос
     final result = _post(
       '/authentication/token/validate_with_login',
-      parser,
       parameters,
+      parser,
       <String, dynamic>{'api_key': _apiKey},
     );
-
     return result;
   }
 
-  //Получаем сессию, передав в аргументы токен
   Future<String> _makeSession({
     required String requestToken,
   }) async {
-    //Парсим JSON
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final sessionId = jsonMap['session_id'] as String;
-
       return sessionId;
     }
 
     final parameters = <String, dynamic>{
       'request_token': requestToken,
     };
-
-    //Делаем POST запрос
     final result = _post(
       '/authentication/session/new',
-      parser,
       parameters,
+      parser,
       <String, dynamic>{'api_key': _apiKey},
     );
-
     return result;
   }
-}
 
-//Проверяем ответ от сервера
-void _validateResponse(HttpClientResponse response, dynamic json) {
-  //Проверяем статус код
-  //Если пользователь не авторизован (код 401), выдаем исключение об авторизации
-  if (response.statusCode == 401) {
-    final status = json['status_code'];
-    final code = status is int ? status : 0;
-
-    //Если статус код 30, то неверный логин или пароль
-    if (code == 30) {
-      throw ApiClientException(type: ApiClientExceptionType.auth);
-    } else {
-      throw ApiClientException(type: ApiClientExceptionType.other);
+  void _validateResponse(HttpClientResponse response, dynamic json) {
+    if (response.statusCode == 401) {
+      final dynamic status = json['status_code'];
+      final code = status is int ? status : 0;
+      if (code == 30) {
+        throw ApiClientException(ApiClientExceptionType.auth);
+      } else {
+        throw ApiClientException(ApiClientExceptionType.other);
+      }
     }
   }
 }
 
 extension HttpClientResponseJsonDecode on HttpClientResponse {
-  //Декодируем JSON
   Future<dynamic> jsonDecode() async {
     return transform(utf8.decoder).toList().then((value) {
       final result = value.join();
       return result;
-    }).then<dynamic>((value) => json.decode(value));
+    }).then<dynamic>((v) => json.decode(v));
   }
 }

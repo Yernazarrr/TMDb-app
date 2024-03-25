@@ -3,10 +3,13 @@ part of 'resources.dart';
 class AppImages {
   AppImages._();
 
-  static const String theActor = 'images/the_actor.webp';
-  static const String theDarkKnight = 'images/the_dark_knight.webp';
-  static const String theDarkKnightBackgroundImg =
-      'images/the_dark_knight_background_img.webp';
-  static const String theDarkKnightPoster =
-      'images/the_dark_knight_poster.webp';
+  static const String actor = 'images/actor.jpeg';
+  static const String tvshowPlaceholder = 'images/tvshow_placeholder.jpeg';
+  static const String trailerPreview = 'images/trailer_preview.jpeg';
+  static const String contrebuter = 'images/contrebuter.jpeg';
+  static const String moviePlacholder = 'images/movie_placholder.jpeg';
+  static const String recomendation = 'images/recomendation.jpeg';
+  static const String topHeaderSubImage = 'images/top_header_sub_image.jpeg';
+  static const String trailerBackground = 'images/trailer_background.jpeg';
+  static const String topHeader = 'images/top_header.jpeg';
 }

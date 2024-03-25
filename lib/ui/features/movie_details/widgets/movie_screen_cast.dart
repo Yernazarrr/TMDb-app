@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:themdb_app/resources/resources.dart';
 
-class MovieScreenCast extends StatelessWidget {
-  const MovieScreenCast({super.key});
+class MovieDetailsMainScreenCastWidget extends StatelessWidget {
+  const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,19 @@ class MovieScreenCast extends StatelessWidget {
             height: 300,
             child: Scrollbar(
               child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
+                itemCount: 20,
                 itemExtent: 120,
-                itemBuilder: (context, index) {
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        border:
+                            Border.all(color: Colors.black.withOpacity(0.2)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -41,34 +45,35 @@ class MovieScreenCast extends StatelessWidget {
                             offset: const Offset(0, 2),
                           ),
                         ],
-                        border:
-                            Border.all(color: Colors.black.withOpacity(0.2)),
-                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: ClipRRect(
+                      child: const ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                         clipBehavior: Clip.hardEdge,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
                         child: Column(
                           children: [
-                            Image.asset(AppImages.theActor),
-                            const Padding(
+                            Image(image: AssetImage(AppImages.actor)),
+                            Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Cristian Bale',
+                                    'Steven Yeun',
                                     maxLines: 1,
                                   ),
-                                  SizedBox(height: 5),
+                                  SizedBox(height: 7),
                                   Text(
-                                    'Bruce Wayne / Batman',
+                                    'Mark Grayson / Invincible (voice)',
                                     maxLines: 4,
+                                  ),
+                                  SizedBox(height: 7),
+                                  Text(
+                                    '8 Episodes',
+                                    maxLines: 1,
                                   ),
                                 ],
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -84,7 +89,7 @@ class MovieScreenCast extends StatelessWidget {
               onPressed: () {},
               child: const Text('Full Cast & Crew'),
             ),
-          )
+          ),
         ],
       ),
     );
