@@ -4,20 +4,20 @@ part 'movie.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Movie {
-  final bool adult;
-  final String backdropPath;
-  final List<int> genreIds;
-  final int id;
-  final String originalLanguage;
-  final String originalTitle;
-  final String overview;
-  final double popularity;
-  final String posterPath;
-  final String releaseDate;
-  final String title;
-  final bool video;
-  final double voteAverage;
-  final double voteCount;
+  final bool? adult;
+  final String? backdropPath;
+  final List<int>? genreIds;
+  final int? id;
+  final String? originalLanguage;
+  final String? originalTitle;
+  final String? overview;
+  final double? popularity;
+  final String? posterPath;
+  final String? releaseDate;
+  final String? title;
+  final bool? video;
+  final double? voteAverage;
+  final double? voteCount;
 
   Movie({
     required this.adult,

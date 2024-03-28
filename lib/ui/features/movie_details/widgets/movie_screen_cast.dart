@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:themdb_app/resources/resources.dart';
+import 'package:themdb_app/domain/api_client/api_client.dart';
+import 'package:themdb_app/library/widgets/inherited/provider.dart';
+import 'package:themdb_app/ui/features/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
@@ -21,66 +23,10 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 300,
+          const SizedBox(
+            height: 250,
             child: Scrollbar(
-              child: ListView.builder(
-                itemCount: 20,
-                itemExtent: 120,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border:
-                            Border.all(color: Colors.black.withOpacity(0.2)),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        clipBehavior: Clip.hardEdge,
-                        child: Column(
-                          children: [
-                            Image(image: AssetImage(AppImages.actor)),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Steven Yeun',
-                                    maxLines: 1,
-                                  ),
-                                  SizedBox(height: 7),
-                                  Text(
-                                    'Mark Grayson / Invincible (voice)',
-                                    maxLines: 4,
-                                  ),
-                                  SizedBox(height: 7),
-                                  Text(
-                                    '8 Episodes',
-                                    maxLines: 1,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: _ActorsListWidget(),
             ),
           ),
           Padding(
@@ -91,6 +37,86 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActorsListWidget extends StatelessWidget {
+  const _ActorsListWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.of<MovieDetailsModel>(context);
+    var cast = model?.movieDetails?.credits.actor;
+    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
+
+    return ListView.builder(
+      itemCount: 20,
+      itemExtent: 120,
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (BuildContext context, int index) {
+        return _ActorListItemWidget(actorIndex: index);
+      },
+    );
+  }
+}
+
+class _ActorListItemWidget extends StatelessWidget {
+  final int actorIndex;
+
+  const _ActorListItemWidget({required this.actorIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.of<MovieDetailsModel>(context);
+
+    final actor = model!.movieDetails!.credits.actor[actorIndex];
+    final profilePath = actor.profilePath;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black.withOpacity(0.2)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          clipBehavior: Clip.hardEdge,
+          child: Column(
+            children: [
+              Image.network(ApiClient.imageUrl(profilePath as String)),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        actor.name as String,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 7),
+                      Text(
+                        actor.character as String,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

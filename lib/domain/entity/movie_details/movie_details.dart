@@ -1,36 +1,38 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:themdb_app/domain/entity/movie_date_parser.dart';
+import 'package:themdb_app/domain/entity/movie_details_credits.dart';
 
 part 'movie_details.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieDetails {
-  final bool adult;
+  final bool? adult;
   final String? backdropPath;
   final BelongsToCollection? belongsToCollection;
-  final int budget;
-  final List<Genre> genres;
+  final int? budget;
+  final List<Genre>? genres;
   final String? homepage;
-  final int id;
+  final int? id;
   final String? imdbId;
-  final String originalLanguage;
-  final String originalTitle;
+  final String? originalLanguage;
+  final String? originalTitle;
   final String? overview;
-  final double popularity;
+  final double? popularity;
   final String? posterPath;
-  final List<ProductionCompanie> productionCompanies;
-  final List<ProductionCountrie> productionCountries;
+  final List<ProductionCompanie>? productionCompanies;
+  final List<ProductionCountrie>? productionCountries;
   @JsonKey(fromJson: parseMovieDateFromString)
   final DateTime? releaseDate;
-  final int revenue;
+  final int? revenue;
   final int? runtime;
-  final List<SpokenLanguage> spokenLanguages;
-  final String status;
+  final List<SpokenLanguage>? spokenLanguages;
+  final String? status;
   final String? tagline;
-  final String title;
-  final bool video;
-  final double voteAverage;
-  final int voteCount;
+  final String? title;
+  final bool? video;
+  final double? voteAverage;
+  final int? voteCount;
+  final MovieDetailsCredits credits;
   MovieDetails({
     required this.adult,
     required this.backdropPath,
@@ -57,6 +59,7 @@ class MovieDetails {
     required this.video,
     required this.voteAverage,
     required this.voteCount,
+    required this.credits,
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) =>

@@ -41,7 +41,7 @@ class MovieListWidget extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     child: Row(
                       children: [
-                        Image.network(ApiClient.imageUrl(posterPath),
+                        Image.network(ApiClient.imageUrl(posterPath as String),
                             width: 95),
                         const SizedBox(width: 15),
                         Expanded(
@@ -50,7 +50,7 @@ class MovieListWidget extends StatelessWidget {
                             children: [
                               const SizedBox(height: 20),
                               Text(
-                                movie.title,
+                                movie.title as String,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                                 maxLines: 1,
@@ -59,7 +59,7 @@ class MovieListWidget extends StatelessWidget {
                               const SizedBox(height: 5),
                               Text(
                                 model.stringFromDate(
-                                  DateTime.parse(movie.releaseDate),
+                                  DateTime.parse(movie.releaseDate as String),
                                 ),
                                 style: const TextStyle(color: Colors.grey),
                                 maxLines: 1,
@@ -67,7 +67,7 @@ class MovieListWidget extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                movie.overview,
+                                movie.overview as String,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),

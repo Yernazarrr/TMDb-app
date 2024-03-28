@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themdb_app/domain/api_client/api_client.dart';
+import 'package:themdb_app/domain/entity/movie_details_credits.dart';
 import 'package:themdb_app/library/widgets/inherited/provider.dart';
 import 'package:themdb_app/ui/features/elements/radial_percent_widget.dart';
 import 'package:themdb_app/ui/features/movie_details/movie_details_model.dart';
@@ -28,7 +29,10 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           child: _DescriptionWidget(),
         ),
         const SizedBox(height: 30),
-        const _PeopleWidgets(),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: _PeopleWidgets(),
+        ),
       ],
     );
   }
@@ -70,8 +74,10 @@ class _TopPosterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
+
     final backdropPath = model?.movieDetails?.backdropPath;
     final posterPath = model?.movieDetails?.posterPath;
+
     return AspectRatio(
       aspectRatio: 390 / 219,
       child: Stack(
@@ -99,8 +105,10 @@ class _MovieNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
+
     var year = model?.movieDetails?.releaseDate?.year.toString();
     year = year != null ? ' ($year)' : '';
+
     return Center(
       child: RichText(
         maxLines: 3,
@@ -135,8 +143,10 @@ class _ScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final movieDetails =
         NotifierProvider.of<MovieDetailsModel>(context)?.movieDetails;
+
     var voteAverage = movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -182,16 +192,21 @@ class _SummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
+
     if (model == null) return const SizedBox.shrink();
+
     var texts = <String>[];
     final releaseDate = model.movieDetails?.releaseDate;
+
     if (releaseDate != null) {
       texts.add(model.stringFromDate(releaseDate));
     }
+
     final productionCountries = model.movieDetails?.productionCountries;
     if (productionCountries != null && productionCountries.isNotEmpty) {
       texts.add('(${productionCountries.first.iso})');
     }
+
     final runtime = model.movieDetails?.runtime ?? 0;
     final duration = Duration(minutes: runtime);
     final hours = duration.inHours;
@@ -230,6 +245,52 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.of<MovieDetailsModel>(context);
+    var crew = model?.movieDetails?.credits.crew;
+
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+
+    var crewChunks = <List<Crew>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks.add(
+        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
+      );
+    }
+
+    return Column(
+      children: crewChunks
+          .map(
+            (chunk) => Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: _PeopleWidgetsRow(crew: chunk),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRow extends StatelessWidget {
+  final List<Crew> crew;
+  const _PeopleWidgetsRow({required this.crew});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: crew.map((e) => _PeopleWidgetsRowItem(crew: e)).toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRowItem extends StatelessWidget {
+  final Crew crew;
+  const _PeopleWidgetsRowItem({required this.crew});
+
+  @override
+  Widget build(BuildContext context) {
     const nameStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
@@ -240,50 +301,14 @@ class _PeopleWidgets extends StatelessWidget {
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
-    return const Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            )
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            )
-          ],
-        ),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(crew.name as String, style: nameStyle),
+          Text(crew.job as String, style: jobTilteStyle),
+        ],
+      ),
     );
   }
 }

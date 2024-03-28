@@ -178,6 +178,7 @@ class ApiClient {
       <String, dynamic>{
         'api_key': _apiKey,
         'language': locale,
+        'append_to_response': 'credits',
       },
     );
     return result;
