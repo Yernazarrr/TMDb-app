@@ -50,7 +50,7 @@ class MovieListWidget extends StatelessWidget {
                             children: [
                               const SizedBox(height: 20),
                               Text(
-                                movie.title as String,
+                                movie.title,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                                 maxLines: 1,
@@ -59,7 +59,7 @@ class MovieListWidget extends StatelessWidget {
                               const SizedBox(height: 5),
                               Text(
                                 model.stringFromDate(
-                                  DateTime.parse(movie.releaseDate as String),
+                                  DateTime.parse(movie.releaseDate),
                                 ),
                                 style: const TextStyle(color: Colors.grey),
                                 maxLines: 1,
@@ -67,7 +67,7 @@ class MovieListWidget extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                movie.overview as String,
+                                movie.overview,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),

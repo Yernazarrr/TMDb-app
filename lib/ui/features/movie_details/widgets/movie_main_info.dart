@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:themdb_app/domain/api_client/api_client.dart';
-import 'package:themdb_app/domain/entity/movie_details_credits.dart';
+import 'package:themdb_app/domain/entity/movie_details_credits/movie_details_credits.dart';
 import 'package:themdb_app/library/widgets/inherited/provider.dart';
 import 'package:themdb_app/ui/features/elements/radial_percent_widget.dart';
 import 'package:themdb_app/ui/features/movie_details/movie_details_model.dart';
+import 'package:themdb_app/ui/navigation/main_navigation.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({Key? key}) : super(key: key);
@@ -93,6 +94,18 @@ class _TopPosterWidget extends StatelessWidget {
                 ? Image.network(ApiClient.imageUrl(posterPath))
                 : const SizedBox.shrink(),
           ),
+          Positioned(
+            top: 5,
+            right: 20,
+            child: IconButton(
+              onPressed: () => model?.toggleFavorite(),
+              icon: Icon(
+                model?.isFavorite == true
+                    ? Icons.favorite
+                    : Icons.favorite_outline,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -106,7 +119,7 @@ class _MovieNameWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
 
-    var year = model?.movieDetails?.releaseDate?.year.toString();
+    var year = model?.movieDetails?.releaseDate.year.toString();
     year = year != null ? ' ($year)' : '';
 
     return Center(
@@ -147,6 +160,11 @@ class _ScoreWidget extends StatelessWidget {
     var voteAverage = movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
 
+    final trailer = movieDetails?.trailer?.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+
+    final trailerKey = trailer?.isNotEmpty == true ? trailer?.first.key : null;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -172,15 +190,20 @@ class _ScoreWidget extends StatelessWidget {
           ),
         ),
         Container(width: 1, height: 15, color: Colors.grey),
-        TextButton(
-          onPressed: () {},
-          child: const Row(
-            children: [
-              Icon(Icons.play_arrow),
-              Text('Play Trailer'),
-            ],
-          ),
-        ),
+        trailerKey != null
+            ? TextButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                  MainNavigationRouteNames.movieTrailer,
+                  arguments: trailerKey,
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.play_arrow),
+                    Text('Play Trailer'),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -305,8 +328,8 @@ class _PeopleWidgetsRowItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(crew.name as String, style: nameStyle),
-          Text(crew.job as String, style: jobTilteStyle),
+          Text(crew.name, style: nameStyle),
+          Text(crew.job, style: jobTilteStyle),
         ],
       ),
     );

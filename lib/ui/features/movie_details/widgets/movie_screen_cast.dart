@@ -24,7 +24,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 250,
+            height: 300,
             child: Scrollbar(
               child: _ActorsListWidget(),
             ),
@@ -48,7 +48,7 @@ class _ActorsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
-    var cast = model?.movieDetails?.credits.actor;
+    var cast = model?.movieDetails?.credits.cast;
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
 
     return ListView.builder(
@@ -71,7 +71,7 @@ class _ActorListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = NotifierProvider.of<MovieDetailsModel>(context);
 
-    final actor = model!.movieDetails!.credits.actor[actorIndex];
+    final actor = model!.movieDetails!.credits.cast[actorIndex];
     final profilePath = actor.profilePath;
 
     return Padding(
@@ -94,7 +94,9 @@ class _ActorListItemWidget extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Column(
             children: [
-              Image.network(ApiClient.imageUrl(profilePath as String)),
+              profilePath != null
+                  ? Image.network(ApiClient.imageUrl(profilePath))
+                  : const SizedBox.shrink(),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -102,13 +104,13 @@ class _ActorListItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        actor.name as String,
+                        actor.name,
                         maxLines: 1,
                       ),
                       const SizedBox(height: 7),
                       Text(
-                        actor.character as String,
-                        maxLines: 2,
+                        actor.character,
+                        maxLines: 3,
                       ),
                     ],
                   ),

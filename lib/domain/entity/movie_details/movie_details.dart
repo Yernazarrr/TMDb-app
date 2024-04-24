@@ -1,39 +1,40 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:themdb_app/domain/entity/movie_date_parser.dart';
-import 'package:themdb_app/domain/entity/movie_details_credits.dart';
+import 'package:themdb_app/domain/entity/movie_details_credits/movie_details_credits.dart';
+import 'package:themdb_app/domain/entity/trailer/trailer.dart';
 
 part 'movie_details.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieDetails {
-  final bool? adult;
+  final bool adult;
   final String? backdropPath;
   final BelongsToCollection? belongsToCollection;
-  final int? budget;
-  final List<Genre>? genres;
-  final String? homepage;
-  final int? id;
-  final String? imdbId;
-  final String? originalLanguage;
-  final String? originalTitle;
-  final String? overview;
-  final double? popularity;
-  final String? posterPath;
-  final List<ProductionCompanie>? productionCompanies;
-  final List<ProductionCountrie>? productionCountries;
-  @JsonKey(fromJson: parseMovieDateFromString)
-  final DateTime? releaseDate;
-  final int? revenue;
-  final int? runtime;
-  final List<SpokenLanguage>? spokenLanguages;
-  final String? status;
-  final String? tagline;
-  final String? title;
-  final bool? video;
-  final double? voteAverage;
-  final int? voteCount;
+  final int budget;
+  final List<Genre> genres;
+  final String homepage;
+  final int id;
+  final String imdbId;
+  final String originalLanguage;
+  final String originalTitle;
+  final String overview;
+  final double popularity;
+  final String posterPath;
+  final List<ProductionCompanie> productionCompanies;
+  final List<ProductionCountrie> productionCountries;
+  final DateTime releaseDate;
+  final int revenue;
+  final int runtime;
+  final List<SpokenLanguage> spokenLanguages;
+  final String status;
+  final String tagline;
+  final String title;
+  final bool video;
+  final double voteAverage;
+  final int voteCount;
   final MovieDetailsCredits credits;
-  MovieDetails({
+  @JsonKey(name: 'videos')
+  final Trailer? trailer;
+  const MovieDetails({
     required this.adult,
     required this.backdropPath,
     required this.belongsToCollection,
@@ -60,6 +61,7 @@ class MovieDetails {
     required this.voteAverage,
     required this.voteCount,
     required this.credits,
+    required this.trailer,
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) =>
@@ -82,7 +84,7 @@ class BelongsToCollection {
 class Genre {
   final int id;
   final String name;
-  Genre({
+  const Genre({
     required this.id,
     required this.name,
   });
@@ -98,7 +100,7 @@ class ProductionCompanie {
   final String? logoPath;
   final String name;
   final String originCountry;
-  ProductionCompanie({
+  const ProductionCompanie({
     required this.id,
     required this.logoPath,
     required this.name,
@@ -116,7 +118,8 @@ class ProductionCountrie {
   @JsonKey(name: 'iso_3166_1')
   final String iso;
   final String name;
-  ProductionCountrie({
+
+  const ProductionCountrie({
     required this.iso,
     required this.name,
   });
@@ -132,10 +135,12 @@ class SpokenLanguage {
   @JsonKey(name: 'iso_639_1')
   final String iso;
   final String name;
+  final String englishName;
 
-  SpokenLanguage({
+  const SpokenLanguage({
     required this.iso,
     required this.name,
+    required this.englishName,
   });
   factory SpokenLanguage.fromJson(Map<String, dynamic> json) =>
       _$SpokenLanguageFromJson(json);

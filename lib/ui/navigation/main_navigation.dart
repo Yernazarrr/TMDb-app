@@ -6,11 +6,13 @@ import 'package:themdb_app/ui/features/home/main_screen_widget.dart';
 import 'package:themdb_app/ui/features/home/main_screen_widget_model.dart';
 import 'package:themdb_app/ui/features/movie_details/movie_details_model.dart';
 import 'package:themdb_app/ui/features/movie_details/movie_details_widget.dart';
+import 'package:themdb_app/ui/features/movie_trailer/movie_trailer_widget.dart';
 
 abstract class MainNavigationRouteNames {
   static const auth = 'auth';
   static const mainScreen = '/';
   static const movieDetails = '/movie_details';
+  static const movieTrailer = '/movie_details/trailer';
 }
 
 class MainNavigation {
@@ -39,6 +41,13 @@ class MainNavigation {
             child: const MovieDetailsWidget(),
           ),
         );
+      case MainNavigationRouteNames.movieTrailer:
+        final arguments = settings.arguments;
+        final youtubeKey = arguments is String ? arguments : '';
+        return MaterialPageRoute(
+          builder: (context) => MovieTrailerWidget(youtubeKey: youtubeKey),
+        );
+
       default:
         const widget = Text('Navigation error!!!');
         return MaterialPageRoute(builder: (context) => widget);

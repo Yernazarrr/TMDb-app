@@ -13,7 +13,7 @@ class PopularMovieResponse {
   final int totalResults;
   final int totalPages;
 
-  PopularMovieResponse({
+  const PopularMovieResponse({
     required this.page,
     required this.movies,
     required this.totalResults,
